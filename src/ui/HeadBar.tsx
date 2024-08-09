@@ -27,12 +27,15 @@ function HeadBar() {
             }} sx={{ color: "#fff", ml: 2 }}>生成配置</Button>
             <Button key="head_link_edit" onClick={() => {
               router.push("/edit")
-            }} sx={{ color: "#fff", ml: 2 }}>编辑配置</Button>
+            }} sx={{ color: "#fff", ml: 2 }}>导入配置</Button>
             <Button key="head_link_public" onClick={() => {
               router.push("/public")
-            }} sx={{ color: "#fff", ml: 2 }}>公共配置</Button>
+            }} sx={{ color: "#fff", ml: 2 }}>分享配置</Button>
+            <Button key="head_link_issue" onClick={() => {
+              window.open("https://github.com/deadmau5v/Norland-Editor/issues/new")
+            }} sx={{ color: "#fff", ml: 2 }}>报告问题</Button>
           </Box>
-          
+
         </Toolbar>
       </Container>
     </AppBar>

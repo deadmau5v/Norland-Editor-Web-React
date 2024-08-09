@@ -32,6 +32,7 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"
         />
+        <title>Norland 配置</title>
       </head>
       <body className={inter.className}>{children}</body>
     </html>

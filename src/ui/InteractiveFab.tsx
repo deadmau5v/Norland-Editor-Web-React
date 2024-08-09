@@ -24,28 +24,30 @@ type Opt = {
   [key: string]: (number | Opt | string)
 }
 
-// 弃用
-// // filterOpt 筛选掉 __desc__ 和 __type__ 的键值对
-// const filterOpt = (opt: Opt) => {
-//   for (const key in opt) {
-//     if (key.startsWith("__desc__") || key.startsWith("__type__")) {
-//       delete opt[key]
-//       continue
-//     }
+// filterOpt 筛选掉 __ 开头
+const filterOpt = (opt: Opt) => {
+  for (const key in opt) {
+    if (key.startsWith("__") && key !== "__info__") {
+      delete opt[key]
+      continue
+    }
 
-//     const value: number | Opt | string = opt[key]
-//     if (typeof value === "object") {
-//       opt[key] = filterOpt(value)
-//     }
-//   }
-//   return opt
-// }
+    const value: number | Opt | string = opt[key]
+    if (typeof value === "object") {
+      opt[key] = filterOpt(value)
+    }
+  }
+  return opt
+}
+
+// 格式化json字符串
+const formatJson = (str: string) => {
+  return JSON.stringify(JSON.parse(str), null, 2)
+}
 
 const saveOpt = (opt: Opt) => {
   localStorage.setItem("opt", JSON.stringify(opt))
 }
-
-
 
 function InteractiveFab({ onOptChange }:
   { onOptChange: Dispatch<SetStateAction<Opt | undefined>>; }
@@ -58,14 +60,13 @@ function InteractiveFab({ onOptChange }:
     const defaultOpt = await getDefaultOpt()
     setDefaultOpt(defaultOpt)
     if (opt) {
-      onOptChange(JSON.parse(opt))
+      let opt_ = JSON.parse(opt)
+      onOptChange(opt_)
     } else {
       onOptChange(defaultOpt)
       saveOpt(defaultOpt)
     }
   }
-
-
 
   const init = async () => {
     loadOpt()
@@ -80,8 +81,21 @@ function InteractiveFab({ onOptChange }:
     saveOpt(defaultOpt ?? {})
   }
 
-  const handleDownload = () => {
-    console.log("下载")
+  const handleDownload = async () => {
+    let opt = localStorage.getItem("opt")
+    const opt_ = filterOpt(JSON.parse(opt ?? "{}"))
+    opt = formatJson(JSON.stringify(opt_))
+    if (opt) {
+      const blob = new Blob([opt], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'gameplay_variables.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
   }
 
   return (<>
