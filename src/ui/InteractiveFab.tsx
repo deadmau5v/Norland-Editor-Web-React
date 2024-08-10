@@ -10,7 +10,7 @@ const getDesc = (opt: Opt, key: string) => {
 }
 
 const getDefaultOpt = async () => {
-  const response = await fetch("http://localhost:8080/api/default", {
+  const response = await fetch("/api/default", {
     method: "GET",
   })
   if (response.ok) {
